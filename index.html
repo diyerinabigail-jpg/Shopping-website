@@ -16,7 +16,7 @@
   --border:#e2dfea; --accent:#75077d; --accent-ink:#ffffff; --lilac:#c9bfea;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
-@media (prefers-color-scheme: light){
+@media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#131217; --panel:#1f1d26; --ink:#f0eef5; --muted:#a49fb3; --border:#332f3d; --accent:#75077d; --lilac:#c9bfea;
   }
@@ -52,10 +52,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-ser
 
 /* ---- products ---- */
 .section-label{padding:20px 16px 4px;font-size:12px;color:var(--muted);font-weight:600;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 16px 40px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;padding:10px 16px 40px;max-width:900px;margin:0 auto;}
 .card{border:1px solid var(--border);display:flex;flex-direction:column;}
 .thumb{aspect-ratio:3/4;position:relative;overflow:hidden;background:var(--panel);}
-.thumb img{width:70%;height:70%;object-fit:cover;display:block;}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:center;}
 .thumb .tag{position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:3px 7px;}
 .thumb.no-image{display:flex;align-items:center;justify-content:center;}
 .thumb.no-image::after{content:'Photo coming soon';color:var(--muted);font-size:12px;text-align:center;padding:0 14px;}
@@ -143,20 +143,33 @@ const CATS = [
   {id:'kids',label:'Kids'},{id:'accessories',label:'Accessories'},{id:'sale',label:'Sale'}
 ];
 const PRODUCTS = [
-  {id:1,name:'Floral Wrap Dress',price:24.99,orig:39.99,cat:'women',img:'images/floral-wrap-dress.jpg'},
-  {id:2,name:'Ribbed Knit Top',price:14.99,cat:'women',img:'images/ribbed-knit-top.jpg'},
-  {id:3,name:'High-Waist Jeans',price:28.99,cat:'women',img:'images/high-waist-jeans.jpg'},
-  {id:4,name:'Oversized Hoodie',price:22.99,orig:34.99,cat:'men',img:'images/oversized-hoodie.jpg'},
-  {id:5,name:'Cargo Joggers',price:19.99,cat:'men',img:'images/cargo-joggers.jpg'},
-  {id:6,name:'Graphic Tee',price:9.99,cat:'men',img:'images/graphic-tee.jpg'},
-  {id:7,name:'Dino Print Set',price:16.99,cat:'kids',img:'images/dino-print-set.jpg'},
-  {id:8,name:'Rainbow Sneakers',price:18.99,cat:'kids',img:'images/rainbow-sneakers.jpg'},
-  {id:9,name:'Matte Lip Set',price:12.99,orig:19.99,cat:'beauty',img:'images/matte-lip-set.jpg'},
-  {id:10,name:'Glow Serum',price:15.99,cat:'beauty',img:'images/glow-serum.jpg'},
-  {id:11,name:'Cozy Throw Blanket',price:21.99,cat:'home',img:'images/cozy-throw-blanket.jpg'},
-  {id:12,name:'Ceramic Mug Set',price:13.99,cat:'home',img:'images/ceramic-mug-set.jpg'},
-  {id:13,name:'Mini Crossbody Bag',price:17.99,cat:'accessories',img:'images/mini-crossbody-bag.jpg'},
-  {id:14,name:'Layered Necklace',price:8.99,orig:14.99,cat:'accessories',img:'images/layered-necklace.jpg'},
+  {id:1,name:'Gold Brown Mouse-Shaped Ear Kids Jacket',price:11000,orig:25000,cat:'kids',img:'images/gold brown mouse-shaped ear coat children jacket.jpg'},
+  {id:2,name:'Gold Cuban Earrings',price:5000,cat:'accessories',img:'images/gold cuban earrings.jpg'},
+  {id:3,name:'Gold Flat Minimalist Necklace',price:12000,cat:'accessories',img:'images/gold flat minimalist necklace.jpg'},
+  {id:4,name:'Blue Denim Jean Women Jacket',price:20000,orig:40000,cat:'women',img:'images/blue jean denim women jacket.jpg'},
+  {id:5,name:'Blue Denim Jean Women Trouser',price:25000,cat:'women',img:'images/blue jean denim women trouser.jpg'},
+  {id:6,name:'Gold Leaf Pendant Necklace',price:12000,cat:'accessories',img:'images/gold leaf pendant  necklace.jpg'},
+  {id:7,name:'Gold with Emerald Green Embedded Stones Necklace and Earring Set',price:30000,cat:'accessories',img:'images/gold necklace and earring with emerald green embedded stones.jpg'},
+  {id:8,name:'Grey Flatlayed Unisex Hoodie',price:15000,cat:'men',img:'images/grey flatlayed unisex hoodie.jpg'},
+  {id:9,name:'Men White Polo Shirt',price:12000,orig:19000,cat:'men',img:'images/men white polo.jpg'},
+  {id:10,name:'Men White Sweater Top',price:15000,cat:'men',img:'images/men white sweater top.jpg'},
+  {id:11,name:'Red Leaf Imprints Short Gown',price:11000,cat:'women',img:'images/red leaf imprints short gown.jpg'},
+  {id:12,name:'Rose Gold Heart Shaped 3 Ring Set',price:9000,cat:'accessories',img:'images/rose gold heart shaped 3 ring set.jpg'},
+  {id:13,name:'Unisex White Flatlayed Hoodie',price:16000,cat:'women',img:'images/unisex white flatlayed hoodie.jpg'},
+  {id:14,name:'White and Black Sweater Top with Blue Ruffled Jeans',price:70000,orig:85000,cat:'women',img:'images/white and black sweater top with blue ruffled jeans.jpg'},
+  {id:15,name:'Grey Flatlayed Unisex Hoodie',price:17000,cat:'women',img:'images/grey flatlayed unisex hoodie.jpg'},
+  {id:16,name:'White Unisex Flatlayed Hoodie',price:15000,cat:'men',img:'images/unisex white flatlayed hoodie.jpg'},
+  {id:17,name:'Women Grey Fur Jacket',price:35000,cat:'women',img:'images/women grey fur jacket.jpg'},
+  {id:18,name:'Boys 3-in-1 Brown Piece',price:27000,cat:'kids',img:'images/boys 3 in 1 brown piece.jpg'},
+  {id:19,name:'White Flare Hand Top with Leaf Designs',price:6000,cat:'women',img:'images/white flare hand top with leaf designs.jpg'},
+  {id:20,name:'Yellow Unisex Children Shirt',price:13000,cat:'kids',img:'images/yellow unisex children shirt 1.jpg'},
+  {id:21,name:'White Knitted Wool Women Sweater',price:14000,cat:'women',img:'images/white knitted wool women sweater.jpg'},
+  {id:22,name:'Women Diamond Studded Bracelet',price:19000,cat:'accessories',img:'images/women diamond studded bracelet.jpg'},
+  {id:23,name:'Women Red Blazers',price:35000,cat:'women',img:'images/women red blazers.jpg'},
+  {id:24,name:'Women Blue Jacket',price:14000,cat:'women',img:'images/women jacket.jpg'},
+  {id:25,name:'Burgundy Flared Short Gown',price:18000,cat:'women',img:'images/burgundy flared short gown.jpg'},
+  {id:26,name:'Children Blue Denim Jeans',price:9000,cat:'kids',img:'images/children denim jeans.jpg'},
+  {id:27,name:'Girls White Bowed Gown',price:11000,cat:'kids',img:'images/girls white bowed gown.jpg'},
 ];
 let activeCat='all', query='', cart={};
  
@@ -184,7 +197,7 @@ function renderGrid(){
       <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="imgFallback(this)">${p.orig?'<span class="tag">SALE</span>':''}</div>
       <div class="info">
         <p class="name">${p.name}</p>
-        <p class="price">$${p.price.toFixed(2)}${p.orig?`<span class="orig">$${p.orig.toFixed(2)}</span>`:''}</p>
+        <p class="price">₦${p.price.toFixed(2)}${p.orig?`<span class="orig">₦${p.orig.toFixed(2)}</span>`:''}</p>
         <button class="add-btn" data-id="${p.id}">Add to Cart</button>
       </div>
     </div>`).join('') : `<div class="empty-cart" style="grid-column:1/-1;">No items match. Try another category or search.</div>`;
@@ -219,19 +232,19 @@ function updateCartUI(){
         <div class="sw"><img src="${p.img}" alt="${p.name}" onerror="imgFallback(this)"></div>
         <div class="ci-info">
           <p class="n">${p.name}</p>
-          <p class="p">$${(p.price*qty).toFixed(2)}</p>
+          <p class="p">₦${(p.price*qty).toFixed(2)}</p>
           <div class="qty">
-            <button onclick="changeQty(${p.id},-1)">−</button>
-            <span>${qty}</span>
-            <button onclick="changeQty(${p.id},1)">+</button>
-            <button class="remove" onclick="removeItem(${p.id})">Remove</button>
+            <button onclick="changeQty(₦{p.id},-1)">−</button>
+            <span>₦{qty}</span>
+            <button onclick="changeQty(₦{p.id},1)">+</button>
+            <button class="remove" onclick="removeItem(₦{p.id})">Remove</button>
           </div>
         </div>
       </div>`;
     }).join('');
   }
   const subtotal=ids.reduce((s,id)=>s+PRODUCTS.find(x=>x.id==id).price*cart[id],0);
-  document.getElementById('subtotal').textContent='$'+subtotal.toFixed(2);
+  document.getElementById('subtotal').textContent='₦'+subtotal.toFixed(2);
   document.getElementById('checkoutBtn').disabled = ids.length===0;
 }
  
@@ -270,7 +283,7 @@ document.getElementById('checkoutBtn').onclick=()=>{
     currency: 'NGN',
     onSuccess: (tx)=>{
       // tx.reference — send this to your backend to verify before fulfilling the order
-      showToast('Payment successful — thank you!');
+      showToast('Payment successful — Thank youuuu!');
       cart={}; updateCartUI(); closeDrawer();
     },
     onCancel: ()=>{ showToast('Payment cancelled'); }
