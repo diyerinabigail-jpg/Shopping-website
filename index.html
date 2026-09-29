@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="manifest" href="manifest.json">  
+<meta name="theme-color" content="#6A0D91">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KIRALUZ — Shop the Drop</title>
@@ -13,16 +16,16 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
   --bg:#ffffff; --panel:#f1eff5; --ink:#423d56; --muted:#726e7d;
-  --border:#e2dfea; --accent:#75077d; --accent-ink:#ffffff; --lilac:#c9bfea;
+  --border:#e2dfea; --accent:#6A0D91; --accent-ink:#ffffff; --lilac:#c9bfea;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#131217; --panel:#1f1d26; --ink:#f0eef5; --muted:#a49fb3; --border:#332f3d; --accent:#75077d; --lilac:#c9bfea;
+    --bg:#131217; --panel:#1f1d26; --ink:#f0eef5; --muted:#a49fb3; --border:#332f3d; --accent:#6A0D91; --lilac:#c9bfea;
   }
-}
+} 
 :root[data-theme="dark"]{
-  --bg:#131217; --panel:#1f1d26; --ink:#f0eef5; --muted:#a49fb3; --border:#332f3d; --accent:#75077d; --lilac:#c9bfea;
+  --bg:#131217; --panel:#1f1d26; --ink:#f0eef5; --muted:#a49fb3; --border:#332f3d; --accent:#6A0D91; --lilac:#c9bfea;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
@@ -95,6 +98,19 @@ footer{padding:26px 16px calc(26px + env(safe-area-inset-bottom,0px));border-top
 .email-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:13px;}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;font-size:13px;font-weight:600;opacity:0;transition:.25s;z-index:80;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+body{padding: bottom 64px;}
+.toast{bottom:80px;}
+.bottom-nav{position:fixed;left:0;right:0;z-index:55;display:flex;background:var(--bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);}
+.bottom-nav button{flex:1;border:none;background:none;color:var(--muted);padding:8px 0 6px;font-family:inherit;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;position:relative;}
+.bottom-nav .ic{font-size:20px;line-height:1;}
+.bottom-nav button:active{color:var(--accent);}
+.bottom-nav .badge{top:2px;right:calc(50% -22px);}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:54;background:var(--bg);border-top:1px solid var(--border);padding:16px 16px calc(76px + env(safe-area-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:8px;transform:translateY(100%);transition:transform .25s;}
+.sheet.open{transform:translateY(0);}
+.sheet button{padding:14px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;}
+@media (min-width:768px){.bottom-nav,sheet{display:none;}body{padding-bottom:0}.toast{bottom:24px;}}
+
 </style>
 </head>
 <body>
@@ -130,13 +146,21 @@ footer{padding:26px 16px calc(26px + env(safe-area-inset-bottom,0px));border-top
   <div class="cart-list" id="cartList"></div>
   <div class="drawer-foot">
     <input id="checkoutEmail" type="email" class="email-input" placeholder="Email for receipt" />
-    <div class="subtotal"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+    <div class="subtotal"><span>Subtotal</span><span id="subtotal">₦0.00</span></div>
     <button class="checkout-btn" id="checkoutBtn">Checkout</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
  
 <script src="https://js.paystack.co/v2/inline.js"></script>
+   <nav class="bottom-nav">
+     <button id="tabHome"><span class="ic">⌂</span>Home</button>
+     <button id="tabCats"><span class="ic">☰</span>Categories</button>
+     <button id="tabSearch"><span class="ic">⌕</span>Search</button>
+     <button id="tabCart"><span class="ic">🛒</span>Cart<span class="badge" id="navBadge">0</span></button>
+   </nav>
+   <div class="sheet" id="catSheet"></div>
+
 <script>
 const CATS = [
   {id:'all',label:'New In'},{id:'women',label:'Women'},{id:'men',label:'Men'},
@@ -291,6 +315,29 @@ document.getElementById('checkoutBtn').onclick=()=>{
 };
  
 renderGrid(); updateCartUI();
+   const sheet=document.getElementById('catSheet');
+   CATS.forEach(c=>{
+     const b=document.createElement('button');
+     b.textContent=c.label;
+     b.onclick=()=>{
+       document.querySelector('.chip[data-id="'+c.id+'"]').click();
+       sheet.classList.remove('open');
+       document.getElementById('grid').scrollIntoView({behavior:'smooth'});
+     };
+     sheet.appendChild(b);
+   });
+   document.getElementById('tabHome').onclick=()=>{
+     document.querySelector('.chip[data-id="all"]').click();
+     sheet.classList.remove('open');
+     window.scrollTo({top:0,behavior:'smooth'});
+   };
+   document.getElementById('tabCats').onclick=()=>sheet.classList.toggle('open');
+   document.getElementById('tabSearch').onclick=()=>{sheet.classList.remove('open');document.getElementById('searchToggle').click();};
+   document.getElementById('tabCart').onclick=()=>{sheet.classList.remove('open');document.getElementById('cartBtn').click();};
+   const cc=document.getElementById('cartCount'), nb=document.getElementById('navBadge');
+   new MutationObserver(()=>nb.textContent=cc.textContent).observe(cc,{childList:true,characterData:true,subtree:true});
+
+if ('serviceWorker' in navigator) {navigator.serviceWorker.register('sw.js');}
 </script>
 </body>
 </html>
