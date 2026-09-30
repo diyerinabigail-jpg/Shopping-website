@@ -99,17 +99,17 @@ footer{padding:26px 16px calc(26px + env(safe-area-inset-bottom,0px));border-top
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;font-size:13px;font-weight:600;opacity:0;transition:.25s;z-index:80;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-body{padding: bottom 64px;}
+body{padding-bottom:64px;}
 .toast{bottom:80px;}
-.bottom-nav{position:fixed;left:0;right:0;z-index:55;display:flex;background:var(--bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;background:var(--bg);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px);}
 .bottom-nav button{flex:1;border:none;background:none;color:var(--muted);padding:8px 0 6px;font-family:inherit;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;position:relative;}
 .bottom-nav .ic{font-size:20px;line-height:1;}
 .bottom-nav button:active{color:var(--accent);}
-.bottom-nav .badge{top:2px;right:calc(50% -22px);}
+.bottom-nav .badge{top:2px;right:calc(50% - 22px);}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:54;background:var(--bg);border-top:1px solid var(--border);padding:16px 16px calc(76px + env(safe-area-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:8px;transform:translateY(100%);transition:transform .25s;}
 .sheet.open{transform:translateY(0);}
 .sheet button{padding:14px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;}
-@media (min-width:768px){.bottom-nav,sheet{display:none;}body{padding-bottom:0}.toast{bottom:24px;}}
+@media (min-width:768px){.bottom-nav,.sheet{display:none;}body{padding-bottom:0}.toast{bottom:24px;}}
 
 </style>
 </head>
@@ -144,11 +144,25 @@ body{padding: bottom 64px;}
 <div class="drawer" id="drawer">
   <div class="drawer-head"><h2>Your Cart</h2><button id="closeDrawer">✕</button></div>
   <div class="cart-list" id="cartList"></div>
+  <div class="delivery">
+  <h3>Delivery Details</h3>
+  <label>Full name</label>
+  <input id="custName" placeholder="Your full name">
+  <label>Phone number</label>
+  <input id="custPhone" placeholder="080...">
+  <label>Delivering from</label>
+  <select id="fromState"></select>
+  <label>Delivering to</label>
+  <select id="toState"></select>
+  <label>Delivery address</label>
+  <textarea id="custAddress" placeholder="Street, city, landmark"></textarea>
+</div>
   <div class="drawer-foot">
-    <input id="checkoutEmail" type="email" class="email-input" placeholder="Email for receipt" />
-    <div class="subtotal"><span>Subtotal</span><span id="subtotal">₦0.00</span></div>
-    <button class="checkout-btn" id="checkoutBtn">Checkout</button>
-  </div>
+  <div class="subtotal"><span>Items</span><span id="subtotal">₦0</span></div>
+  <div class="subtotal"><span>Delivery</span><span id="deliveryRow">₦0</span></div>
+  <div class="subtotal"><span>Total</span><span id="grandTotal">₦0</span></div>
+  <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+</div>
 </div>
 <div class="toast" id="toast"></div>
  
@@ -164,21 +178,21 @@ body{padding: bottom 64px;}
 <script>
 const CATS = [
   {id:'all',label:'New In'},{id:'women',label:'Women'},{id:'men',label:'Men'},
-  {id:'kids',label:'Kids'},{id:'accessories',label:'Accessories'},{id:'sale',label:'Sale'}
+  {id:'kids',label:'Kids'},{id:'jewelry',label:'Jewelry'},{id:'sale',label:'Sale'}
 ];
 const PRODUCTS = [
   {id:1,name:'Gold Brown Mouse-Shaped Ear Kids Jacket',price:11000,orig:25000,cat:'kids',img:'images/gold brown mouse-shaped ear coat children jacket.jpg'},
-  {id:2,name:'Gold Cuban Earrings',price:5000,cat:'accessories',img:'images/gold cuban earrings.jpg'},
-  {id:3,name:'Gold Flat Minimalist Necklace',price:12000,cat:'accessories',img:'images/gold flat minimalist necklace.jpg'},
+  {id:2,name:'Gold Cuban Earrings',price:5000,cat:'jewelry',img:'images/gold cuban earrings.jpg'},
+  {id:3,name:'Gold Flat Minimalist Necklace',price:12000,cat:'jewelry',img:'images/gold flat minimalist necklace.jpg'},
   {id:4,name:'Blue Denim Jean Women Jacket',price:20000,orig:40000,cat:'women',img:'images/blue jean denim women jacket.jpg'},
   {id:5,name:'Blue Denim Jean Women Trouser',price:25000,cat:'women',img:'images/blue jean denim women trouser.jpg'},
-  {id:6,name:'Gold Leaf Pendant Necklace',price:12000,cat:'accessories',img:'images/gold leaf pendant  necklace.jpg'},
-  {id:7,name:'Gold with Emerald Green Embedded Stones Necklace and Earring Set',price:30000,cat:'accessories',img:'images/gold necklace and earring with emerald green embedded stones.jpg'},
+  {id:6,name:'Gold Leaf Pendant Necklace',price:12000,cat:'jewelry',img:'images/gold leaf pendant  necklace.jpg'},
+  {id:7,name:'Gold with Emerald Green Embedded Stones Necklace and Earring Set',price:30000,cat:'jewelry',img:'images/gold necklace and earring with emerald green embedded stones.jpg'},
   {id:8,name:'Grey Flatlayed Unisex Hoodie',price:15000,cat:'men',img:'images/grey flatlayed unisex hoodie.jpg'},
   {id:9,name:'Men White Polo Shirt',price:12000,orig:19000,cat:'men',img:'images/men white polo.jpg'},
   {id:10,name:'Men White Sweater Top',price:15000,cat:'men',img:'images/men white sweater top.jpg'},
   {id:11,name:'Red Leaf Imprints Short Gown',price:11000,cat:'women',img:'images/red leaf imprints short gown.jpg'},
-  {id:12,name:'Rose Gold Heart Shaped 3 Ring Set',price:9000,cat:'accessories',img:'images/rose gold heart shaped 3 ring set.jpg'},
+  {id:12,name:'Rose Gold Heart Shaped 3 Ring Set',price:9000,cat:'jewelry',img:'images/rose gold heart shaped 3 ring set.jpg'},
   {id:13,name:'Unisex White Flatlayed Hoodie',price:16000,cat:'women',img:'images/unisex white flatlayed hoodie.jpg'},
   {id:14,name:'White and Black Sweater Top with Blue Ruffled Jeans',price:70000,orig:85000,cat:'women',img:'images/white and black sweater top with blue ruffled jeans.jpg'},
   {id:15,name:'Grey Flatlayed Unisex Hoodie',price:17000,cat:'women',img:'images/grey flatlayed unisex hoodie.jpg'},
@@ -188,7 +202,7 @@ const PRODUCTS = [
   {id:19,name:'White Flare Hand Top with Leaf Designs',price:6000,cat:'women',img:'images/white flare hand top with leaf designs.jpg'},
   {id:20,name:'Yellow Unisex Children Shirt',price:13000,cat:'kids',img:'images/yellow unisex children shirt 1.jpg'},
   {id:21,name:'White Knitted Wool Women Sweater',price:14000,cat:'women',img:'images/white knitted wool women sweater.jpg'},
-  {id:22,name:'Women Diamond Studded Bracelet',price:19000,cat:'accessories',img:'images/women diamond studded bracelet.jpg'},
+  {id:22,name:'Women Diamond Studded Bracelet',price:19000,cat:'jewelry',img:'images/women diamond studded bracelet.jpg'},
   {id:23,name:'Women Red Blazers',price:35000,cat:'women',img:'images/women red blazers.jpg'},
   {id:24,name:'Women Blue Jacket',price:14000,cat:'women',img:'images/women jacket.jpg'},
   {id:25,name:'Burgundy Flared Short Gown',price:18000,cat:'women',img:'images/burgundy flared short gown.jpg'},
@@ -258,10 +272,10 @@ function updateCartUI(){
           <p class="n">${p.name}</p>
           <p class="p">₦${(p.price*qty).toFixed(2)}</p>
           <div class="qty">
-            <button onclick="changeQty(₦{p.id},-1)">−</button>
-            <span>₦{qty}</span>
-            <button onclick="changeQty(₦{p.id},1)">+</button>
-            <button class="remove" onclick="removeItem(₦{p.id})">Remove</button>
+            <button onclick="changeQty(${p.id},-1)">−</button>
+            <span>${qty}</span>
+            <button onclick="changeQty(${p.id},1)">+</button>
+            <button class="remove" onclick="removeItem(${p.id})">Remove</button>
           </div>
         </div>
       </div>`;
@@ -284,37 +298,49 @@ document.getElementById('closeDrawer').onclick=closeDrawer;
 overlay.onclick=closeDrawer;
 function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');}
  
-document.getElementById('searchToggle').onclick=()=>{
-  document.getElementById('searchWrap').classList.toggle('open');
-  document.getElementById('searchInput').focus();
-};
-document.getElementById('searchInput').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();renderGrid();});
- 
-const PAYSTACK_PUBLIC_KEY = 'pk_test_36d07d23f74dbabea986da3ef4caf36f3751dd26';
- 
 document.getElementById('checkoutBtn').onclick=()=>{
   const ids=Object.keys(cart);
   if(!ids.length) return;
   const email=document.getElementById('checkoutEmail').value.trim();
-  if(!email){ showToast('Enter an email to continue'); return; }
-  const subtotal=ids.reduce((s,id)=>s+PRODUCTS.find(x=>x.id==id).price*cart[id],0);
- 
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
+  if(!email||!name||!phone||!address){ showToast('Fill in all delivery details'); return; }
+  const itemsTotal=ids.reduce((s,id)=>s+PRODUCTS.find(x=>x.id==id).price*cart[id],0);
+  const total=itemsTotal+deliveryFee();
   const popup=new PaystackPop();
   popup.newTransaction({
     key: PAYSTACK_PUBLIC_KEY,
     email: email,
-    amount: Math.round(subtotal*100), // Paystack charges in kobo (₦1 = 100 kobo)
-    currency: 'NGN',
-    onSuccess: (tx)=>{
-      // tx.reference — send this to your backend to verify before fulfilling the order
-      showToast('Payment successful — Thank youuuu!');
-      cart={}; updateCartUI(); closeDrawer();
-    },
-    onCancel: ()=>{ showToast('Payment cancelled'); }
+    amount: Math.round(total*100),
+    currency:'NGN',
+    metadata:{custom_fields:[
+      {display_name:"Name",variable_name:"name",value:name},
+      {display_name:"Phone",variable_name:"phone",value:phone},
+      {display_name:"From",variable_name:"from",value:fromSel.value},
+      {display_name:"To",variable_name:"to",value:toSel.value},
+      {display_name:"Address",variable_name:"address",value:address}
+    ]},
+    onSuccess:(tx)=>{ showToast('Payment successful — thank you!'); cart={}; updateCartUI(); closeDrawer(); },
+    onCancel:()=>{ showToast('Payment cancelled'); }
   });
 };
- 
-renderGrid(); updateCartUI();
+
+const STATES=['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT (Abuja)'];
+const fromSel=document.getElementById('fromState'), toSel=document.getElementById('toState');
+STATES.forEach(s=>{fromSel.innerHTML+=`<option>${s}</option>`;toSel.innerHTML+=`<option>${s}</option>`;});
+fromSel.value='Lagos'; toSel.value='Lagos';
+function deliveryFee(){ return Object.keys(cart).length ? (fromSel.value===toSel.value ? 1500 : 3500) : 0; }
+function refreshTotals(){
+  const ids=Object.keys(cart);
+  const itemsTotal=ids.reduce((s,id)=>s+PRODUCTS.find(x=>x.id==id).price*cart[id],0);
+  document.getElementById('subtotal').textContent='₦'+itemsTotal.toLocaleString();
+  document.getElementById('deliveryRow').textContent='₦'+deliveryFee().toLocaleString();
+  document.getElementById('grandTotal').textContent='₦'+(itemsTotal+deliveryFee()).toLocaleString();
+}
+fromSel.onchange=refreshTotals; toSel.onchange=refreshTotals;
+
+renderGrid(); updateCartUI(); refreshTotals();
    const sheet=document.getElementById('catSheet');
    CATS.forEach(c=>{
      const b=document.createElement('button');
