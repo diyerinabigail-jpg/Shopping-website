@@ -111,6 +111,35 @@ body{padding-bottom:64px;}
 .sheet button{padding:14px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;}
 @media (min-width:768px){.bottom-nav,.sheet{display:none;}body{padding-bottom:0}.toast{bottom:24px;}}
 
+.step-tabs{display:flex;border-bottom:1px solid var(--border);}
+.step-tab{flex:1;text-align:center;padding:10px 4px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;}
+.step-tab.active{color:var(--accent);border-bottom:2px solid var(--accent);}
+.step-panel{display:none;flex:1;min-height:0;flex-direction:column;}
+.step-panel.active{display:flex;}
+.step-panel .cart-list,.step-panel .delivery,.step-panel .review{flex:1;overflow-y:auto;padding:8px 16px;}
+.two-btn{display:flex;gap:8px;}
+.two-btn .checkout-btn{flex:2;}
+.ghost-btn{flex:1;background:none;border:1px solid var(--border);color:var(--ink);padding:13px;font-weight:700;font-size:14px;cursor:pointer;}
+.review .r-item{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border);}
+
+#stepDelivery .delivery{display:flex;flex-direction:column;}
+#stepDelivery .delivery label{display:block!important;width:100%;font-size:12px;color:var(--muted);margin:14px 0 4px;}
+#stepDelivery .delivery input,
+#stepDelivery .delivery select,
+#stepDelivery .delivery textarea{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box;
+  padding:10px 12px;
+  margin:0 0 4px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:var(--panel);
+  color:var(--ink);
+  font-family:inherit;
+  font-size:13px;
+}
+
 </style>
 </head>
 <body>
@@ -143,26 +172,54 @@ body{padding-bottom:64px;}
 <div class="overlay" id="overlay"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head"><h2>Your Cart</h2><button id="closeDrawer">✕</button></div>
-  <div class="cart-list" id="cartList"></div>
-  <div class="delivery">
-  <h3>Delivery Details</h3>
-  <label>Full name</label>
-  <input id="custName" placeholder="Your full name">
-  <label>Phone number</label>
-  <input id="custPhone" placeholder="080...">
-  <label>Delivering from</label>
-  <select id="fromState"></select>
-  <label>Delivering to</label>
-  <select id="toState"></select>
-  <label>Delivery address</label>
-  <textarea id="custAddress" placeholder="Street, city, landmark"></textarea>
-</div>
-  <div class="drawer-foot">
-  <div class="subtotal"><span>Items</span><span id="subtotal">₦0</span></div>
-  <div class="subtotal"><span>Delivery</span><span id="deliveryRow">₦0</span></div>
-  <div class="subtotal"><span>Total</span><span id="grandTotal">₦0</span></div>
-  <button class="checkout-btn" id="checkoutBtn">Checkout</button>
-</div>
+
+  <div class="step-tabs">
+    <span class="step-tab active" id="dotCart">1. Cart</span>
+    <span class="step-tab" id="dotDelivery">2. Delivery</span>
+    <span class="step-tab" id="dotPayment">3. Payment</span>
+  </div>
+
+  <div class="step-panel active" id="stepCart">
+    <div class="cart-list" id="cartList"></div>
+    <div class="drawer-foot">
+      <div class="subtotal"><span>Items</span><span id="subtotal">₦0</span></div>
+      <button class="checkout-btn" id="toDeliveryBtn">Continue to Delivery</button>
+    </div>
+  </div>
+
+  <div class="step-panel" id="stepDelivery">
+    <div class="delivery">
+      <label>Full name</label>
+      <input id="custName" placeholder="Your full name">
+      <label>Phone number</label>
+      <input id="custPhone" placeholder="080...">
+      <label>Email (for your receipt)</label>
+      <input id="checkoutEmail" type="email" placeholder="you@email.com">
+      <label>Delivering from</label>
+      <select id="fromState"></select>
+      <label>Delivering to</label>
+      <select id="toState"></select>
+      <label>Delivery address</label>
+      <textarea id="custAddress" placeholder="Street, city, landmark"></textarea>
+    </div>
+    <div class="drawer-foot two-btn">
+      <button class="ghost-btn" id="backToCartBtn">Back</button>
+      <button class="checkout-btn" id="toPaymentBtn">Continue to Payment</button>
+    </div>
+  </div>
+
+  <div class="step-panel" id="stepPayment">
+    <div class="review" id="orderReview"></div>
+    <div class="drawer-foot">
+      <div class="subtotal"><span>Items</span><span id="subtotal2">₦0</span></div>
+      <div class="subtotal"><span>Delivery</span><span id="deliveryRow">₦0</span></div>
+      <div class="subtotal"><span>Total</span><span id="grandTotal">₦0</span></div>
+      <div class="two-btn">
+        <button class="ghost-btn" id="backToDeliveryBtn">Back</button>
+        <button class="checkout-btn" id="checkoutBtn">Pay Now</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
  
@@ -296,8 +353,9 @@ const drawer=document.getElementById('drawer'), overlay=document.getElementById(
 document.getElementById('cartBtn').onclick=()=>{drawer.classList.add('open');overlay.classList.add('open');};
 document.getElementById('closeDrawer').onclick=closeDrawer;
 overlay.onclick=closeDrawer;
-function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');}
+function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');goToStep('Cart');}
  
+const PAYSTACK_PUBLIC_KEY = 'pk_test_36d07d23f74dbabea986da3ef4caf36f3751dd26'; 
 document.getElementById('checkoutBtn').onclick=()=>{
   const ids=Object.keys(cart);
   if(!ids.length) return;
@@ -335,10 +393,43 @@ function refreshTotals(){
   const ids=Object.keys(cart);
   const itemsTotal=ids.reduce((s,id)=>s+PRODUCTS.find(x=>x.id==id).price*cart[id],0);
   document.getElementById('subtotal').textContent='₦'+itemsTotal.toLocaleString();
+  document.getElementById('subtotal2').textContent='₦'+itemsTotal.toLocaleString();
   document.getElementById('deliveryRow').textContent='₦'+deliveryFee().toLocaleString();
   document.getElementById('grandTotal').textContent='₦'+(itemsTotal+deliveryFee()).toLocaleString();
 }
 fromSel.onchange=refreshTotals; toSel.onchange=refreshTotals;
+
+function goToStep(name){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('step'+name).classList.add('active');
+  document.querySelectorAll('.step-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('dot'+name).classList.add('active');
+}
+function renderReview(){
+  const ids=Object.keys(cart);
+  document.getElementById('orderReview').innerHTML = ids.map(id=>{
+    const p=PRODUCTS.find(x=>x.id==id);
+    return `<div class="r-item"><span>${p.name} × ${cart[id]}</span><span>₦${(p.price*cart[id]).toLocaleString()}</span></div>`;
+  }).join('');
+}
+document.getElementById('toDeliveryBtn').onclick=()=>{
+  if(!Object.keys(cart).length){ showToast('Your cart is empty'); return; }
+  goToStep('Delivery');
+};
+document.getElementById('backToCartBtn').onclick=()=>goToStep('Cart');
+document.getElementById('toPaymentBtn').onclick=()=>{
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const email=document.getElementById('checkoutEmail').value.trim();
+  const address=document.getElementById('custAddress').value.trim();
+  if(!name||!phone||!email||!address){ showToast('Fill in all delivery details'); return; }
+  renderReview();
+  refreshTotals();
+  goToStep('Payment');
+};
+document.getElementById('backToDeliveryBtn').onclick=()=>goToStep('Delivery');
+document.getElementById('dotCart').onclick=()=>goToStep('Cart');
+document.getElementById('dotDelivery').onclick=()=>{ if(Object.keys(cart).length) goToStep('Delivery'); };
 
 renderGrid(); updateCartUI(); refreshTotals();
    const sheet=document.getElementById('catSheet');
