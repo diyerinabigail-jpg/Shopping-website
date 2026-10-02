@@ -3,7 +3,7 @@
 <head>
 <link rel="manifest" href="manifest.json">  
 <meta name="theme-color" content="#6A0D91">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KIRALUZ — Shop the Drop</title>
@@ -38,7 +38,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-ser
 .row1-actions{display:flex;gap:10px;}
 .icon-btn{border:none;background:var(--panel);width:40px;height:40px;border-radius:10px;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;color:var(--ink);}
 .badge{position:absolute;top:-4px;right:-4px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
-.search-wrap{max-height:0;overflow:hidden;transition:max-height .25s ease;padding:0 16px;}
+.search-wrap{max-height:0;overflow:hidden;padding:0 16px;}
 .search-wrap.open{max-height:56px;padding-bottom:10px;}
 .search-wrap input{width:80%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:14px;}
 .cat-row{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none;}
@@ -140,6 +140,18 @@ body{padding-bottom:64px;}
   font-size:13px;
 }
 
+.wish-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.85);border:none;width:28px;height:28px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);}
+.wish-panel{position:fixed;left:0;right:0;bottom:0;z-index:54;background:var(--bg);border-top:1px solid var(--border);padding:16px 16px calc(76px + env(safe-area-inset-bottom,0px));max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s;}
+.wish-panel.open{transform:translateY(0);}
+.wish-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.wi-thumb{width:48px;height:60px;flex:none;overflow:hidden;background:var(--panel);}
+.wi-thumb img{width:100%;height:100%;object-fit:cover;}
+.wi-info{flex:1;min-width:0;}
+.wi-info .n{font-size:13px;font-weight:600;margin:0 0 2px;}
+.wi-info .p{font-size:13px;color:var(--accent);font-weight:700;margin:0;}
+.wi-add{border:1px solid var(--ink);background:none;color:var(--ink);font-size:11px;padding:6px 8px;cursor:pointer;}
+.wi-remove{border:none;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px;}
+
 </style>
 </head>
 <body>
@@ -225,11 +237,12 @@ body{padding-bottom:64px;}
  
 <script src="https://js.paystack.co/v2/inline.js"></script>
    <nav class="bottom-nav">
-     <button id="tabHome"><span class="ic">⌂</span>Home</button>
+     <button id="tabWishlist"><span class="ic">♡</span>Wishlist<span class="badge" id="wishBadge">0</span></button>
      <button id="tabCats"><span class="ic">☰</span>Categories</button>
      <button id="tabSearch"><span class="ic">⌕</span>Search</button>
      <button id="tabCart"><span class="ic">🛒</span>Cart<span class="badge" id="navBadge">0</span></button>
    </nav>
+   <div class="wish-panel" id="wishPanel"></div>
    <div class="sheet" id="catSheet"></div>
 
 <script>
@@ -266,7 +279,7 @@ const PRODUCTS = [
   {id:26,name:'Children Blue Denim Jeans',price:9000,cat:'kids',img:'images/children denim jeans.jpg'},
   {id:27,name:'Girls White Bowed Gown',price:11000,cat:'kids',img:'images/girls white bowed gown.jpg'},
 ];
-let activeCat='all', query='', cart={};
+let activeCat='all', query='', cart={}, wishlist=new Set();
  
 const catRow=document.getElementById('catRow');
 CATS.forEach(c=>{
@@ -289,7 +302,7 @@ function renderGrid(){
   const list=PRODUCTS.filter(matches);
   grid.innerHTML = list.length ? list.map(p=>`
     <div class="card">
-      <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="imgFallback(this)">${p.orig?'<span class="tag">SALE</span>':''}</div>
+      <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="imgFallback(this)">${p.orig?'<span class="tag">SALE</span>':''}<button class="wish-btn" data-id="${p.id}">${wishlist.has(p.id)?'♥':'♡'}</button></div>
       <div class="info">
         <p class="name">${p.name}</p>
         <p class="price">₦${p.price.toFixed(2)}${p.orig?`<span class="orig">₦${p.orig.toFixed(2)}</span>`:''}</p>
@@ -299,6 +312,10 @@ function renderGrid(){
   grid.querySelectorAll('.add-btn').forEach(btn=>{
     btn.onclick=()=>addToCart(parseInt(btn.dataset.id));
   });
+
+  grid.querySelectorAll('.wish-btn').forEach(btn=>{
+  btn.onclick=(e)=>{ e.stopPropagation(); toggleWish(parseInt(btn.dataset.id)); };
+});
 }
  
 function addToCart(id){
@@ -312,6 +329,25 @@ function changeQty(id,delta){
   updateCartUI();
 }
 function removeItem(id){ delete cart[id]; updateCartUI(); }
+
+function toggleWish(id){
+  if(wishlist.has(id)) wishlist.delete(id); else wishlist.add(id);
+  renderGrid();
+  document.getElementById('wishBadge').textContent=wishlist.size;
+}
+function renderWishPanel(){
+  const panel=document.getElementById('wishPanel');
+  const items=[...wishlist].map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+  panel.innerHTML = items.length ? items.map(p=>`
+    <div class="wish-item">
+      <div class="wi-thumb"><img src="${p.img}" alt="${p.name}" onerror="imgFallback(this)"></div>
+      <div class="wi-info"><p class="n">${p.name}</p><p class="p">₦${p.price.toLocaleString()}</p></div>
+      <button class="wi-add" data-id="${p.id}">Add to Cart</button>
+      <button class="wi-remove" data-id="${p.id}">✕</button>
+    </div>`).join('') : `<div class="empty-cart">No saved items yet.<br>Tap the ♡ on any product.</div>`;
+  panel.querySelectorAll('.wi-add').forEach(btn=>btn.onclick=()=>addToCart(parseInt(btn.dataset.id)));
+  panel.querySelectorAll('.wi-remove').forEach(btn=>btn.onclick=()=>{toggleWish(parseInt(btn.dataset.id));renderWishPanel();});
+}
  
 function updateCartUI(){
   const ids=Object.keys(cart);
@@ -351,6 +387,14 @@ function imgFallback(el){ el.parentElement.classList.add('no-image'); el.remove(
  
 const drawer=document.getElementById('drawer'), overlay=document.getElementById('overlay');
 document.getElementById('cartBtn').onclick=()=>{drawer.classList.add('open');overlay.classList.add('open');};
+document.getElementById('searchToggle').onclick=()=>{
+  document.getElementById('searchWrap').classList.toggle('open');
+  document.getElementById('searchInput').focus();
+};
+document.getElementById('searchInput').addEventListener('input',e=>{
+  query=e.target.value.trim().toLowerCase();
+  renderGrid();
+});
 document.getElementById('closeDrawer').onclick=closeDrawer;
 overlay.onclick=closeDrawer;
 function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');goToStep('Cart');}
@@ -449,7 +493,11 @@ renderGrid(); updateCartUI(); refreshTotals();
      window.scrollTo({top:0,behavior:'smooth'});
    };
    document.getElementById('tabCats').onclick=()=>sheet.classList.toggle('open');
-   document.getElementById('tabSearch').onclick=()=>{sheet.classList.remove('open');document.getElementById('searchToggle').click();};
+   document.getElementById('tabWishlist').onclick=()=>{
+  sheet.classList.remove('open');
+  renderWishPanel();
+  document.getElementById('wishPanel').classList.toggle('open');
+};
    document.getElementById('tabCart').onclick=()=>{sheet.classList.remove('open');document.getElementById('cartBtn').click();};
    const cc=document.getElementById('cartCount'), nb=document.getElementById('navBadge');
    new MutationObserver(()=>nb.textContent=cc.textContent).observe(cc,{childList:true,characterData:true,subtree:true});
