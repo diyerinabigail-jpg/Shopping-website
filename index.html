@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta property="og:title" content="KIRALUZ — Shop the Drop">
+<meta property="og:description" content="Fresh fashion drops, real checkout, real delivery — shop now.">
+<meta property="og:image" content="https://kiraluz.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://kiraluz.netlify.app/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="manifest.json">  
 <meta name="theme-color" content="#6A0D91">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -151,6 +157,34 @@ body{padding-bottom:64px;}
 .wi-info .p{font-size:13px;color:var(--accent);font-weight:700;margin:0;}
 .wi-add{border:1px solid var(--ink);background:none;color:var(--ink);font-size:11px;padding:6px 8px;cursor:pointer;}
 .wi-remove{border:none;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px;}
+.pd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:65;opacity:0;pointer-events:none;transition:opacity .2s;}
+.pd-overlay.open{opacity:1;pointer-events:auto;}
+.pd-modal{position:fixed;left:50%;bottom:0;transform:translate(-50%,100%);width:min(420px,100%);max-height:85vh;overflow-y:auto;background:var(--bg);z-index:66;transition:transform .25s ease;padding-bottom:env(safe-area-inset-bottom,0px);}
+.pd-modal.open{transform:translate(-50%,0);}
+.pd-close{position:absolute;top:10px;right:10px;background:var(--panel);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;color:var(--ink);z-index:2;}
+.pd-img{aspect-ratio:3/4;overflow:hidden;background:var(--panel);}
+.pd-img img{width:100%;height:100%;object-fit:cover;}
+.pd-body{padding:16px;}
+.pd-body h3{margin:0 0 6px;font-size:18px;}
+.pd-price{color:var(--accent);font-weight:700;font-size:16px;margin:0 0 12px;}
+.pd-desc{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px;}
+
+.oc-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:75;opacity:0;pointer-events:none;transition:opacity .2s;}
+.oc-overlay.open{opacity:1;pointer-events:auto;}
+.oc-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);width:min(320px,86vw);background:var(--bg);border:1px solid var(--border);z-index:76;padding:28px 20px;text-align:center;opacity:0;pointer-events:none;transition:.2s;}
+.oc-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+.oc-check{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.oc-modal h2{margin:0 0 8px;font-size:18px;}
+.oc-ref{color:var(--accent);font-weight:700;font-size:13px;margin:0 0 10px;}
+.oc-sub{color:var(--muted);font-size:12px;line-height:1.5;margin:0 0 18px;}
+
+.card{transition:transform .15s ease;animation:fadeInUp .3s ease backwards;}
+.card:active{transform:scale(.97);}
+.card:nth-child(1){animation-delay:.02s;} .card:nth-child(2){animation-delay:.06s;}
+.card:nth-child(3){animation-delay:.1s;} .card:nth-child(4){animation-delay:.14s;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.add-btn,.checkout-btn,.wish-btn,.chip{transition:transform .12s ease,opacity .12s ease;}
+.add-btn:active,.checkout-btn:active,.wish-btn:active{transform:scale(.94);opacity:.85;}
 
 </style>
 </head>
@@ -245,12 +279,39 @@ body{padding-bottom:64px;}
 </nav>
    <div class="wish-panel" id="wishPanel"></div>
    <div class="sheet" id="catSheet"></div>
+   <div class="pd-overlay" id="pdOverlay"></div>
+<div class="pd-modal" id="pdModal">
+  <button class="pd-close" id="pdClose">✕</button>
+  <div class="pd-img" id="pdImg"></div>
+  <div class="pd-body">
+    <h3 id="pdName"></h3>
+    <p class="pd-price" id="pdPrice"></p>
+    <p class="pd-desc" id="pdDesc"></p>
+    <button class="checkout-btn" id="pdAddBtn">Add to Cart</button>
+  </div>
+</div>
+
+<div class="oc-overlay" id="ocOverlay"></div>
+<div class="oc-modal" id="ocModal">
+  <div class="oc-check">✓</div>
+  <h2>Order Confirmed</h2>
+  <p class="oc-ref" id="ocRef"></p>
+  <p class="oc-sub">A receipt has been sent to your email. We'll text you when it ships.</p>
+  <button class="checkout-btn" id="ocDoneBtn">Continue Shopping</button>
+</div>
+
 
 <script>
 const CATS = [
   {id:'all',label:'New In'},{id:'women',label:'Women'},{id:'men',label:'Men'},
   {id:'kids',label:'Kids'},{id:'jewelry',label:'Jewelry'},{id:'sale',label:'Sale'}
 ];
+
+// ============================================
+// EDIT YOUR PRODUCTS HERE — add, remove, or change any item below.
+// Each needs: id (unique number), name, price (₦), cat, img.
+// Optional: orig (for sale items), desc (short description).
+// ============================================
 const PRODUCTS = [
   {id:1,name:'Gold Brown Mouse-Shaped Ear Kids Jacket',price:11000,orig:25000,cat:'kids',img:'images/gold brown mouse-shaped ear coat children jacket.jpg'},
   {id:2,name:'Gold Cuban Earrings',price:5000,cat:'jewelry',img:'images/gold cuban earrings.jpg'},
@@ -291,7 +352,25 @@ CATS.forEach(c=>{
     document.getElementById('sectionLabel').textContent=c.label.toUpperCase();renderGrid();};
   catRow.appendChild(b);
 });
- 
+
+ function openProductView(id){
+  const p=PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('pdImg').innerHTML=`<img src="${p.img}" alt="${p.name}" onerror="imgFallback(this)">`;
+  document.getElementById('pdName').textContent=p.name;
+  document.getElementById('pdPrice').innerHTML='₦'+p.price.toLocaleString()+(p.orig?' <span class="orig">₦'+p.orig.toLocaleString()+'</span>':'');
+  document.getElementById('pdDesc').textContent=p.desc||'A KIRALUZ favorite — great quality, great price.';
+  document.getElementById('pdAddBtn').onclick=()=>{ addToCart(id); closeProductView(); };
+  document.getElementById('pdModal').classList.add('open');
+  document.getElementById('pdOverlay').classList.add('open');
+}
+function closeProductView(){
+  document.getElementById('pdModal').classList.remove('open');
+  document.getElementById('pdOverlay').classList.remove('open');
+}
+document.getElementById('pdClose').onclick=closeProductView;
+document.getElementById('pdOverlay').onclick=closeProductView;
+
 function matches(p){
   const okCat = activeCat==='all' ? true : activeCat==='sale' ? !!p.orig : p.cat===activeCat;
   const okQuery = !query || p.name.toLowerCase().includes(query);
@@ -341,7 +420,7 @@ function renderWishPanel(){
   const items=[...wishlist].map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
   panel.innerHTML = items.length ? items.map(p=>`
     <div class="wish-item">
-      <div class="wi-thumb"><img src="${p.img}" alt="${p.name}" onerror="imgFallback(this)"></div>
+      <div class="thumb" onclick="openProductView(${p.id})"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="imgFallback(this)"></div>
       <div class="wi-info"><p class="n">${p.name}</p><p class="p">₦${p.price.toLocaleString()}</p></div>
       <button class="wi-add" data-id="${p.id}">Add to Cart</button>
       <button class="wi-remove" data-id="${p.id}">✕</button>
@@ -424,10 +503,22 @@ document.getElementById('checkoutBtn').onclick=()=>{
       {display_name:"To",variable_name:"to",value:toSel.value},
       {display_name:"Address",variable_name:"address",value:address}
     ]},
-    onSuccess:(tx)=>{ showToast('Payment successful — thank you!'); cart={}; updateCartUI(); closeDrawer(); },
+    onSuccess:(tx)=>{
+  document.getElementById('ocRef').textContent='Ref: '+tx.reference;
+  document.getElementById('ocOverlay').classList.add('open');
+  document.getElementById('ocModal').classList.add('open');
+  cart={}; updateCartUI(); closeDrawer();
+},
     onCancel:()=>{ showToast('Payment cancelled'); }
   });
 };
+
+function closeOrderConfirm(){
+  document.getElementById('ocOverlay').classList.remove('open');
+  document.getElementById('ocModal').classList.remove('open');
+}
+document.getElementById('ocDoneBtn').onclick=closeOrderConfirm;
+document.getElementById('ocOverlay').onclick=closeOrderConfirm;
 
 const STATES=['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT (Abuja)'];
 const fromSel=document.getElementById('fromState'), toSel=document.getElementById('toState');
