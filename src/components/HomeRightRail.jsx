@@ -19,7 +19,7 @@ export default function HomeRightRail({ onOpenProduct, onCheckout }) {
           </button>)}
         </div>
       </section>
-      <section className="home-club-card"><span>✦ KIRALUX CLUB</span><h2>Good things<br />come to members.</h2><p>Join for early access, member-only perks and a little treat on your birthday.</p><button>Discover the club <Icon name="arrow" size={14} /></button></section>
+      <section className="home-club-card"><span>✦ KIRALUZ CLUB</span><h2>Good things<br />come to members.</h2><p>Join for early access, member-only perks and a little treat on your birthday.</p><button>Discover the club <Icon name="arrow" size={14} /></button></section>
       {picks.length > 0 && <section className="home-mini-panel">
         <div className="home-mini-heading"><h2>Your wishlist</h2><Icon name="heart" size={16} /></div>
         <div className="home-mini-products">{picks.map((product) => <button className="home-mini-product" key={product.id} onClick={() => onOpenProduct(product)}>
