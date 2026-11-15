@@ -17,9 +17,9 @@ export default function Sidebar({ page = 'home', onNavigate, onOpenWishlist }) {
 
   return (
     <aside className="sidebar">
-      <a className="brand" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/'); }} aria-label="KIRALUX home">
+      <a className="brand" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/'); }} aria-label="KIRALUZ home">
         <span className="brand-mark">K</span>
-        <span>KIRALUX</span>
+        <span>KIRALUZ</span>
       </a>
       <nav className="side-links" aria-label="Main navigation">
         {links.map((link, index) => (
@@ -63,7 +63,7 @@ export default function Sidebar({ page = 'home', onNavigate, onOpenWishlist }) {
       </button>
 
       <div className="sidebar-bottom">
-        <a href="mailto:hello@kiralux.com"><Icon name="headset" size={18} /><span><b>Need Help?</b><small>24/7 Support Center</small></span></a>
+        <a href="mailto:hello@kiraluz.com"><Icon name="headset" size={18} /><span><b>Need Help?</b><small>24/7 Support Center</small></span></a>
         <button className="light-mode"><Icon name="sun" size={17} /> Light Mode <Icon name="chevron" size={15} /></button>
       </div>
       <span className="sr-only">{categories.length} shopping categories</span>
