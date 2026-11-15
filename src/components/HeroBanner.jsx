@@ -22,7 +22,7 @@ export default function HeroBanner({ onShop }) {
         </div>
       </div>
       <div className="hero-portrait-wrap">
-        <img className="hero-portrait" src={heroProduct.image} alt="Featured KIRALUX denim collection" />
+        <img className="hero-portrait" src={heroProduct.image} alt="Featured KIRALUZ denim collection" />
       </div>
       <div className="hero-decoration hero-decoration-one" />
       <div className="hero-decoration hero-decoration-two" />
