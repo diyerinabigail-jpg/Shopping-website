@@ -5,7 +5,7 @@ export default function ShopBanner({ onShop }) {
   return (
     <section className="shop-banner">
       <div className="shop-banner-copy">
-        <span className="banner-eyebrow">THE KIRALUX EDIT</span>
+        <span className="banner-eyebrow">THE KIRALUZ EDIT</span>
         <h2>A little something for your next favorite.</h2>
         <p>Refined styles. Brighter days. Up to 30% off selected fashion.</p>
       </div>
