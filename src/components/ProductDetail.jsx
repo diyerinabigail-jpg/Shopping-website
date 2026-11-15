@@ -18,7 +18,7 @@ const productFeatures = (product) => [
   'Easy-to-style design for everyday wear',
   'Carefully finished details for a polished look',
   'Made to pair effortlessly with your wardrobe',
-  'A KIRALUX favorite, selected for lasting style',
+  'A KIRALUZ favorite, selected for lasting style',
 ];
 
 function Gallery({ product }) {
@@ -118,7 +118,7 @@ function ProductInformation({ product, onAdded, onShowReviews }) {
   }, [product.id, product.colors]);
 
   const shareProduct = async () => {
-    const shareData = { title: product.name, text: `Take a look at ${product.name} at KIRALUX.`, url: window.location.href };
+    const shareData = { title: product.name, text: `Take a look at ${product.name} at KIRALUZ.`, url: window.location.href };
     try {
       if (navigator.share) {
         await navigator.share(shareData);
@@ -158,7 +158,7 @@ function ProductInformation({ product, onAdded, onShowReviews }) {
   return (
     <section className="detail-information">
       <div className="detail-badge-row">
-        <span className="detail-label">{product.originalPrice ? 'Limited offer' : product.badge || 'KIRALUX PICK'}</span>
+        <span className="detail-label">{product.originalPrice ? 'Limited offer' : product.badge || 'KIRALUZ PICK'}</span>
         <button className="share-product" onClick={shareProduct} aria-label="Share product"><Icon name="share" size={19} /> <span>{copied ? 'Copied!' : 'Share'}</span></button>
       </div>
       <h1>{product.name}</h1>
@@ -275,7 +275,7 @@ function ProductTabs({ product, activeTab, setActiveTab }) {
           <div className="shipping-copy">
             <p><b>Delivery:</b> Orders are prepared within 1–2 business days. Delivery timing and fees are shown at checkout.</p>
             <p><b>Returns:</b> If it’s not quite right, request a return within 30 days of delivery. Items should be unworn and in their original condition.</p>
-            <p><b>Need help?</b> Our support team is here around the clock at hello@kiralux.com.</p>
+            <p><b>Need help?</b> Our support team is here around the clock at hello@kiraluz.com.</p>
           </div>
         )}
       </div>
