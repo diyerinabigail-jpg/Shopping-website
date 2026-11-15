@@ -5,7 +5,7 @@ import BenefitsBar from './BenefitsBar.jsx';
 import Icon from './Icon.jsx';
 
 const steps = ['Your bag', 'Delivery', 'Payment'];
-const DEMO_PROMO = 'KIRALUX10';
+const DEMO_PROMO = 'KIRALUZ10';
 
 export default function CheckoutPage({ onContinueShopping, onOpenProduct }) {
   const { cartItems, cartCount, cartTotal, changeQuantity, removeFromCart } = useShop();
@@ -27,7 +27,7 @@ export default function CheckoutPage({ onContinueShopping, onOpenProduct }) {
       setPromoMessage('Demo code applied — 10% off.');
     } else {
       setPromoApplied(false);
-      setPromoMessage('That code isn’t valid. Try KIRALUX10 (demo code).');
+      setPromoMessage('That code isn’t valid. Try KIRALUZ10 (demo code).');
     }
   }
 
@@ -75,7 +75,7 @@ export default function CheckoutPage({ onContinueShopping, onOpenProduct }) {
           <div className="checkout-title">
             <div>
               <h1>{step === 1 ? 'Your bag' : step === 2 ? 'Delivery details' : 'Payment'}</h1>
-              <p>{step === 1 ? 'Review your items before proceeding to delivery.' : step === 2 ? 'Where should we send your KIRALUX finds?' : 'Choose how you’d like to pay.'}</p>
+              <p>{step === 1 ? 'Review your items before proceeding to delivery.' : step === 2 ? 'Where should we send your KIRALUZ finds?' : 'Choose how you’d like to pay.'}</p>
             </div>
             {step === 1 && <span>{cartCount} {cartCount === 1 ? 'item' : 'items'}</span>}
           </div>
