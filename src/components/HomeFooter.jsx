@@ -3,7 +3,7 @@ import Icon from './Icon.jsx';
 
 const groups = [
   { title: 'Shop', links: [['New arrivals', '/shop'], ['Women', '/shop?category=women'], ['Men', '/shop?category=men'], ['Kids', '/shop?category=kids'], ['Jewelry', '/shop?category=jewelry']] },
-  { title: 'Customer care', links: [['Contact us', 'mailto:hello@kiraluz.com'], ['Shipping & returns', 'mailto:hello@kiralux.com?subject=Shipping%20and%20returns'], ['FAQs', 'mailto:hello@kiraluz.com?subject=FAQs']] },
+  { title: 'Customer care', links: [['Contact us', 'mailto:hello@kiraluz.com'], ['Shipping & returns', 'mailto:hello@kiraluz.com?subject=Shipping%20and%20returns'], ['FAQs', 'mailto:hello@kiraluz.com?subject=FAQs']] },
   { title: 'About KIRALUZ', links: [['Our story', 'mailto:hello@kiraluz.com?subject=Our%20story'], ['Privacy policy', 'mailto:hello@kiraluz.com?subject=Privacy%20policy'], ['Terms of service', 'mailto:hello@kiraluz.com?subject=Terms']] },
 ];
 
