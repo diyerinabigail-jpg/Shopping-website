@@ -16,19 +16,19 @@ const footerGroups = [
   {
     title: 'Customer care',
     links: [
-      { label: 'Contact us', href: 'mailto:hello@kiralux.com' },
-      { label: 'Shipping information', href: 'mailto:hello@kiralux.com?subject=Shipping%20information' },
-      { label: 'Returns & exchanges', href: 'mailto:hello@kiralux.com?subject=Returns%20and%20exchanges' },
-      { label: 'FAQs', href: 'mailto:hello@kiralux.com?subject=Frequently%20asked%20questions' },
+      { label: 'Contact us', href: 'mailto:hello@kiraluz.com' },
+      { label: 'Shipping information', href: 'mailto:hello@kiraluz.com?subject=Shipping%20information' },
+      { label: 'Returns & exchanges', href: 'mailto:hello@kiraluz.com?subject=Returns%20and%20exchanges' },
+      { label: 'FAQs', href: 'mailto:hello@kiraluz.com?subject=Frequently%20asked%20questions' },
     ],
   },
   {
-    title: 'About KIRALUX',
+    title: 'About KIRALUZ',
     links: [
-      { label: 'Our story', href: 'mailto:hello@kiralux.com?subject=About%20KIRALUX' },
-      { label: 'Sustainability', href: 'mailto:hello@kiralux.com?subject=Sustainability' },
-      { label: 'Privacy policy', href: 'mailto:hello@kiralux.com?subject=Privacy%20policy' },
-      { label: 'Terms of service', href: 'mailto:hello@kiralux.com?subject=Terms%20of%20service' },
+      { label: 'Our story', href: 'mailto:hello@kiraluz.com?subject=About%20KIRALUZ' },
+      { label: 'Sustainability', href: 'mailto:hello@kiraluz.com?subject=Sustainability' },
+      { label: 'Privacy policy', href: 'mailto:hello@kiraluz.com?subject=Privacy%20policy' },
+      { label: 'Terms of service', href: 'mailto:hello@kiraluz.com?subject=Terms%20of%20service' },
     ],
   },
 ];
@@ -45,12 +45,12 @@ export default function Footer({ onCategoryChange }) {
     <footer className="store-footer">
       <div className="footer-main">
         <section className="footer-about">
-          <a className="brand footer-brand" href="#" aria-label="KIRALUX home">
+          <a className="brand footer-brand" href="#" aria-label="KIRALUZ home">
             <span className="brand-mark">K</span>
-            <span>KIRALUX</span>
+            <span>KIRALUZ</span>
           </a>
           <p>Good finds, thoughtful details, and everyday pieces that feel like you.</p>
-          <div className="footer-socials" aria-label="Follow KIRALUX">
+          <div className="footer-socials" aria-label="Follow KIRALUZ">
             <a href="https://www.instagram.com/" aria-label="Instagram">ig</a>
             <a href="https://www.facebook.com/" aria-label="Facebook">f</a>
             <a href="https://www.pinterest.com/" aria-label="Pinterest">p</a>
@@ -86,17 +86,17 @@ export default function Footer({ onCategoryChange }) {
             </button>
           </form>
           <span className="newsletter-note" role="status">
-            {subscribed ? 'You’re on the list. Welcome to KIRALUX!' : 'By subscribing, you agree to our Privacy Policy.'}
+            {subscribed ? 'You’re on the list. Welcome to KIRALUZ!' : 'By subscribing, you agree to our Privacy Policy.'}
           </span>
         </section>
       </div>
 
       <div className="footer-bottom">
-        <span>© 2026 KIRALUX. Made for your everyday.</span>
+        <span>© 2026 KIRALUZ. Made for your everyday.</span>
         <div className="footer-payments" aria-label="Accepted payment methods">
           <span>VISA</span><span>mastercard</span><span>Paystack</span>
         </div>
-        <a href="mailto:hello@kiralux.com"><Icon name="headset" size={14} /> Need a hand?</a>
+        <a href="mailto:hello@kiraluz.com"><Icon name="headset" size={14} /> Need a hand?</a>
       </div>
     </footer>
   );
