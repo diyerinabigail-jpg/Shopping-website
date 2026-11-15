@@ -70,11 +70,11 @@ export default function AccountPage({ initialTab = 'orders', onNavigate, onOpenP
 
   async function copyCoupon() {
     try {
-      await navigator.clipboard.writeText('KIRALUX10');
+      await navigator.clipboard.writeText('KIRALUZ10');
       setCopiedCoupon(true);
-      setNotice('KIRALUX10 copied — use it at checkout for 10% off.');
+      setNotice('KIRALUZ10 copied — use it at checkout for 10% off.');
     } catch (error) {
-      setNotice('Your demo code is KIRALUX10 — enter it at checkout for 10% off.');
+      setNotice('Your demo code is KIRALUZ10 — enter it at checkout for 10% off.');
     }
   }
 
@@ -185,7 +185,7 @@ export default function AccountPage({ initialTab = 'orders', onNavigate, onOpenP
 
           {activeTab === 'addresses' && (
             <section className="account-detail-panel">
-              <div className="account-panel-heading"><div><h2>Saved addresses</h2><p>Manage where your KIRALUX orders are delivered.</p></div></div>
+              <div className="account-panel-heading"><div><h2>Saved addresses</h2><p>Manage where your KIRALUZ orders are delivered.</p></div></div>
               {editingAddress ? <form className="account-edit-form" onSubmit={saveAddress}>
                 {Object.entries({ line1: 'Street address', line2: 'District / area', city: 'City and postal code', country: 'Country' }).map(([key, label]) => <label key={key}>{label}<input required value={address[key]} onChange={(event) => setAddress({ ...address, [key]: event.target.value })} /></label>)}
                 <div className="account-form-actions"><button type="button" onClick={() => setEditingAddress(false)}>Cancel</button><button type="submit">Save address</button></div>
@@ -196,8 +196,8 @@ export default function AccountPage({ initialTab = 'orders', onNavigate, onOpenP
           {activeTab === 'coupons' && (
             <section className="account-detail-panel">
               <div className="account-panel-heading"><div><h2>Your Coupons</h2><p>A little thank-you for shopping with us.</p></div></div>
-              <article className="account-coupon"><span>WELCOME OFFER</span><strong>10% off your order</strong><p>Valid on your next order. Use at checkout.</p><div><code>KIRALUX10</code><button onClick={copyCoupon}>{copiedCoupon ? 'Copied!' : 'Copy code'}</button></div></article>
-              <p className="account-demo-note">Demo coupon for this preview. Apply KIRALUX10 at checkout.</p>
+              <article className="account-coupon"><span>WELCOME OFFER</span><strong>10% off your order</strong><p>Valid on your next order. Use at checkout.</p><div><code>KIRALUZ10</code><button onClick={copyCoupon}>{copiedCoupon ? 'Copied!' : 'Copy code'}</button></div></article>
+              <p className="account-demo-note">Demo coupon for this preview. Apply KIRALUZ10 at checkout.</p>
             </section>
           )}
 
@@ -222,7 +222,7 @@ export default function AccountPage({ initialTab = 'orders', onNavigate, onOpenP
             <div className="account-side-heading"><h2>Default delivery address</h2><button onClick={() => { setActiveTab('addresses'); setEditingAddress(true); }}><Icon name="edit" size={17} /> Edit</button></div>
             <div className="account-address-body"><Icon name="pin" size={24} /><div><b>{profile.name}</b><span>{address.line1}</span><span>{address.line2}</span><span>{address.city}</span><span>{address.country}</span></div></div>
           </section>
-          <section className="account-club-card"><span>KIRALUX CLUB <b>♛</b></span><h2>Good things<br />come to members.</h2><p>Get exclusive perks, early access and more!</p><button onClick={() => setActiveTab('coupons')}>Learn more <Icon name="arrow" size={15} /></button><i aria-hidden="true">✳</i></section>
+          <section className="account-club-card"><span>KIRALUZ CLUB <b>♛</b></span><h2>Good things<br />come to members.</h2><p>Get exclusive perks, early access and more!</p><button onClick={() => setActiveTab('coupons')}>Learn more <Icon name="arrow" size={15} /></button><i aria-hidden="true">✳</i></section>
           <section className="account-perks-card">
             <div><Icon name="box" size={21} /><span>Free shipping on select items</span></div>
             <div><Icon name="tag" size={21} /><span>Exclusive member deals</span></div>
