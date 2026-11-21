@@ -13,9 +13,9 @@ const tabs = [
 ];
 
 const sampleOrders = [
-  { id: 'NS789456', date: 'May 12, 2024', itemIds: [4, 2, 24], total: 34897, status: 'On its way', arrival: 'Arrives Tue, May 16', delivered: false },
-  { id: 'NS789123', date: 'Apr 28, 2024', itemIds: [8, 9], total: 45999, status: 'Delivered', arrival: 'Delivered on May 2, 2024', delivered: true },
-  { id: 'NS788901', date: 'Apr 03, 2024', itemIds: [12, 10, 3], total: 29990, status: 'Delivered', arrival: 'Delivered on Apr 6, 2024', delivered: true },
+  { id: 'NS789456', date: 'May 12, 2026', itemIds: [4, 2, 24], total: 34897, status: 'On its way', arrival: 'Arrives Tue, May 16', delivered: false },
+  { id: 'NS789123', date: 'Apr 28, 2026', itemIds: [8, 9], total: 45999, status: 'Delivered', arrival: 'Delivered on May 2, 2026', delivered: true },
+  { id: 'NS788901', date: 'Apr 03, 2026', itemIds: [12, 10, 3], total: 29990, status: 'Delivered', arrival: 'Delivered on Apr 6, 2026', delivered: true },
 ];
 
 const initialProfile = { name: 'Alina Putri', email: 'alina.putri@example.com', phone: '+62 812 3456 7890' };
@@ -98,7 +98,7 @@ export default function AccountPage({ initialTab = 'orders', onNavigate, onOpenP
             <div className="account-avatar" aria-hidden="true">A</div>
             <div className="account-profile-copy">
               <h2>{profile.name}</h2>
-              <span>Member since Jan 2024</span>
+              <span>Member since Jan 2026</span>
               <span>Happy shopping! <b>✨</b></span>
             </div>
             <button className="account-edit-profile" onClick={() => { setActiveTab('profile'); setEditingProfile(true); }}><Icon name="user" size={18} /> Edit Profile</button>
